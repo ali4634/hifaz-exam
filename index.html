@@ -1,138 +1,236 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امتحانی رزلٹ PWA</title>
+    <title>جدید امتحانی رزلٹ</title>
 
- 
-    <!-- PWA کے لیے ضروری ٹیگز -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#007bff"/>
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#4a90e2"/>
+    <link rel="apple-touch-icon" href="icon-192x192.png">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf-autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf-autotable.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600&display=swap');
         
+        :root {
+            --primary-color: #4a90e2; --secondary-color: #f5f7fa; --text-color: #4a4a4a;
+            --header-color: #3b73b5; --border-color: #e0e6ed; --white-color: #ffffff;
+            --danger-color: #d9534f; --success-color: #5cb85c; --info-color: #5bc0de;
+        }
         body {
-            font-family: 'Noto Nastaliq Urdu', sans-serif;
-            background-color: #f8f9fa;
-            color: #343a40;
-            margin: 0;
-            padding: 8px; /* مزید کم جگہ */
+            font-family: 'Noto Nastaliq Urdu', sans-serif; 
+            background-color: var(--secondary-color);
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 8px; 
+            font-size: 13px;
         }
-        .container {
-            max-width: 800px; /* کنٹینر کو چھوٹا کیا گیا */
-            margin: auto;
-            background-color: #ffffff;
-            padding: 15px; /* اندرونی جگہ کم کی گئی */
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .container { 
+            max-width: 800px; 
+            margin: auto; 
+            padding: 8px; 
         }
-        h1 { font-size: 22px; }
-        h2 { font-size: 18px; }
-        h1, h2 {
-            text-align: center;
-            color: #0056b3;
-            border-bottom: 1px solid #dee2e6;
-            padding-bottom: 8px;
-            margin-top: 5px;
-            margin-bottom: 15px;
+        .card {
+            background-color: var(--white-color); 
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            padding: 12px; 
+            margin-bottom: 16px;
         }
-        #add-student-form {
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
+        h1, h2 { 
+            text-align: center; 
+            color: var(--header-color); 
+            margin-bottom: 16px; 
         }
+        h1 { 
+            font-size: 20px; 
+            font-weight: 600; 
+            margin-top: 8px;
+        }
+        h2 { 
+            font-size: 16px; 
+            border-bottom: 1px solid var(--primary-color); 
+            padding-bottom: 6px; 
+        }
+        
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* کم از کم چوڑائی کم کی گئی */
-            gap: 8px; /* فیلڈز کے درمیان فاصلہ کم کیا گیا */
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
         }
-        .form-group label { font-size: 14px; margin-bottom: 4px; }
-        .form-group input, .form-group textarea {
-            padding: 7px; /* فیلڈ کا سائز کم کیا گیا */
-            border-radius: 4px;
-            border: 1px solid #ced4da;
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+            margin-bottom: 4px;
+        }
+        .form-group.full-width { 
+            grid-column: 1 / -1; 
+            margin-top: 4px; 
+        }
+        
+        .form-group label { 
+            margin-bottom: 2px; 
+            font-size: 12px; 
+            font-weight: 600; 
+        }
+        .form-group input {
+            padding: 4px 6px;
+            height: 24px;
+            border-radius: 3px; 
+            border: 1px solid var(--border-color);
+            font-family: inherit; 
+            font-size: 12px;
+        }
+        .form-group textarea {
+            padding: 6px 8px;
+            min-height: 40px;
+            border-radius: 3px;
+            border: 1px solid var(--border-color);
             font-family: inherit;
-            font-size: 14px;
+            font-size: 12px;
+            resize: vertical;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 14px; /* ٹیبل کا فونٹ سائز کم کیا گیا */
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 12px; 
         }
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 6px; /* ٹیبل خانوں کا سائز کم کیا گیا */
-            text-align: right;
-            vertical-align: middle;
+        th, td { 
+            border: 1px solid var(--border-color); 
+            padding: 5px; 
+            text-align: right; 
+            vertical-align: middle; 
         }
-        th { background-color: #007bff; color: white; }
-        td:nth-child(6) { max-width: 180px; word-wrap: break-word; } /* تبصرہ کالم */
+        thead { 
+            background-color: var(--primary-color); 
+            color: var(--white-color); 
+        }
+        tbody tr:nth-child(even) { 
+            background-color: #f9fafb; 
+        }
+        td:nth-child(5) { 
+            font-weight: 600; 
+        }
+
         .btn {
-            padding: 8px 12px; /* بٹن کا سائز کم کیا گیا */
-            border-radius: 4px;
-            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 4px; 
+            font-size: 12px; 
             cursor: pointer;
-            border: none;
-            color: white;
-            font-family: inherit;
+            border: none; 
+            color: white; 
+            font-family: inherit; 
+            font-weight: 600;
+            white-space: nowrap;
         }
-        .btn-danger-small { padding: 4px 8px; font-size: 12px; }
-        .btn-primary { background-color: #007bff; }
-        .btn-success { background-color: #28a745; }
-        .btn-danger { background-color: #dc3545; }
-        .btn-info { background-color: #17a2b8; }
-        .button-group {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 8px; /* بٹنوں میں فاصلہ کم کیا گیا */
-            flex-wrap: wrap;
+        .btn-danger-small { 
+            padding: 3px 6px; 
+            font-size: 10px; 
+        }
+        .btn-primary { 
+            background-color: var(--primary-color); 
+        }
+        .btn-success { 
+            background-color: var(--success-color); 
+        }
+        .btn-danger { 
+            background-color: var(--danger-color); 
+        }
+        .btn-info { 
+            background-color: var(--info-color); 
+        }
+        .button-group { 
+            margin-top: 12px; 
+            display: flex; 
+            justify-content: center; 
+            gap: 8px; 
+            flex-wrap: wrap; 
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 5px;
+            }
+            .card {
+                padding: 10px;
+            }
+            table {
+                font-size: 11px;
+            }
+            th, td {
+                padding: 4px 3px;
+            }
+            .btn {
+                padding: 5px 8px;
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            h1 {
+                font-size: 18px;
+            }
+            h2 {
+                font-size: 15px;
+            }
+            .button-group {
+                gap: 6px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>امتحانی رزلٹ PWA</h1>
-        <div id="add-student-form">
+        <h1>جامعہ امتحانی رزلٹ</h1>
+        <div class="card">
             <h2>نیا طالب علم شامل کریں</h2>
             <div class="form-grid">
                 <div class="form-group"><label for="studentName">نام:</label><input type="text" id="studentName"></div>
-                <div class="form-group"><label for="q1Marks">سوال 1(33):</label><input type="number" id="q1Marks" max="33"></div>
-                <div class="form-group"><label for="q2Marks">سوال 2(33):</label><input type="number" id="q2Marks" max="33"></div>
-                <div class="form-group"><label for="q3Marks">سوال 3(34):</label><input type="number" id="q3Marks" max="34"></div>
+                <div class="form-group"><label for="q1Marks">سوال 1 (33):</label><input type="number" id="q1Marks" max="33"></div>
+                <div class="form-group"><label for="q2Marks">سوال 2 (33):</label><input type="number" id="q2Marks" max="33"></div>
+                <div class="form-group"><label for="q3Marks">سوال 3 (34):</label><input type="number" id="q3Marks" max="34"></div>
+                <div class="form-group full-width"><label for="comments">تبصرہ:</label><textarea id="comments" rows="2"></textarea></div>
             </div>
-            <div class="form-group" style="margin-top: 8px;"><label for="comments">تبصرہ:</label><textarea id="comments" rows="2"></textarea></div>
-            <div style="text-align: center; margin-top: 15px;">
+            <div style="text-align: center; margin-top: 12px;">
                 <button class="btn btn-primary" onclick="addStudent()">لسٹ میں شامل کریں</button>
             </div>
         </div>
-        <hr style="margin: 20px 0;">
-        <h2>تمام طلباء کا رزلٹ</h2>
-        <table id="studentsTable">
-            <thead><tr><th>نام</th><th>سوال1</th><th>سوال2</th><th>سوال3</th><th>کل</th><th>تبصرہ</th><th>عمل</th></tr></thead>
-            <tbody></tbody>
-        </table>
-        <div class="button-group">
-            <button class="btn btn-success" onclick="saveData()">محفوظ کریں</button>
-            <button class="btn btn-danger" onclick="resetAllData()">ری سیٹ</button>
-        </div>
-        <div class="button-group">
-             <button class="btn btn-info" onclick="generatePdf()">PDF ڈاؤنلوڈ</button>
-             <button class="btn btn-success" onclick="shareOnWhatsApp()">واٹس ایپ</button>
+
+        <div class="card">
+            <h2>تمام طلباء کا نتیجہ</h2>
+            <div style="overflow-x: auto;">
+                <table id="studentsTable">
+                    <thead><tr><th>نام</th><th>سوال1</th><th>سوال2</th><th>سوال3</th><th>کُل</th><th>تبصرہ</th><th>عمل</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+             <div class="button-group">
+                <button class="btn btn-success" onclick="saveData()">محفوظ کریں</button>
+                <button class="btn btn-danger" onclick="resetAllData()">ری سیٹ</button>
+            </div>
+            <div class="button-group">
+                 <button class="btn btn-info" onclick="generatePdf()">PDF</button>
+                 <button class="btn btn-success" onclick="shareOnWhatsApp()">WhatsApp</button>
+            </div>
         </div>
     </div>
+
 <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered.')).catch(err => console.log('SW registration failed: ', err)); });
+    if ('serviceWorker' in navigator) { 
+        window.addEventListener('load', () => { 
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg failed: ', err)); 
+        }); 
     }
     document.addEventListener('DOMContentLoaded', loadStudents);
+
     function addStudent() {
         const name = document.getElementById('studentName').value.trim();
         const q1 = parseInt(document.getElementById('q1Marks').value) || 0;
@@ -141,22 +239,52 @@
         const comments = document.getElementById('comments').value.trim();
         if (!name) { alert('براہ کرم طالب علم کا نام درج کریں۔'); return; }
         displayStudentInTable({ name, q1, q2, q3, total: q1 + q2 + q3, comments });
-        document.getElementById('add-student-form').reset();
+        document.getElementById('studentName').value = '';
+        document.getElementById('q1Marks').value = '';
+        document.getElementById('q2Marks').value = '';
+        document.getElementById('q3Marks').value = '';
+        document.getElementById('comments').value = '';
     }
+    
     function displayStudentInTable(student) {
         const row = document.querySelector("#studentsTable tbody").insertRow();
-        row.innerHTML = `<td>${student.name}</td><td>${student.q1}</td><td>${student.q2}</td><td>${student.q3}</td><td><b>${student.total}</b></td><td>${student.comments}</td><td><button class="btn btn-danger btn-danger-small" onclick="deleteRow(this)">حذف</button></td>`;
+        row.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.q1}</td>
+            <td>${student.q2}</td>
+            <td>${student.q3}</td>
+            <td><b>${student.total}</b></td>
+            <td>${student.comments}</td>
+            <td><button class="btn btn-danger btn-danger-small" onclick="deleteRow(this)">حذف</button></td>
+        `;
     }
-    function deleteRow(btn) { if (confirm('کیا آپ واقعی اس طالب علم کو حذف کرنا چاہتے ہیں؟')) { btn.closest('tr').remove(); } }
+
+    function deleteRow(btn) { 
+        if (confirm('کیا آپ واقعی اس طالب علم کو حذف کرنا چاہتے ہیں؟')) { 
+            btn.closest('tr').remove(); 
+        } 
+    }
+
     function saveData() {
-        const data = Array.from(document.querySelectorAll("#studentsTable tbody tr")).map(row => ({ name: row.cells[0].innerText, q1: row.cells[1].innerText, q2: row.cells[2].innerText, q3: row.cells[3].innerText, total: row.cells[4].innerText, comments: row.cells[5].innerText }));
+        const data = Array.from(document.querySelectorAll("#studentsTable tbody tr")).map(row => ({
+            name: row.cells[0].innerText, 
+            q1: row.cells[1].innerText, 
+            q2: row.cells[2].innerText, 
+            q3: row.cells[3].innerText, 
+            total: row.cells[4].innerText, 
+            comments: row.cells[5].innerText 
+        }));
         localStorage.setItem('examStudentsData', JSON.stringify(data));
         alert('ڈیٹا کامیابی سے محفوظ ہو گیا ہے!');
     }
+
     function loadStudents() {
         const data = localStorage.getItem('examStudentsData');
-        if (data) { JSON.parse(data).forEach(s => displayStudentInTable(s)); }
+        if (data) { 
+            JSON.parse(data).forEach(s => displayStudentInTable(s)); 
+        }
     }
+
     function resetAllData() {
         if (confirm('کیا آپ واقعی تمام ڈیٹا مستقل طور پر حذف کرنا چاہتے ہیں؟')) {
             localStorage.removeItem('examStudentsData');
@@ -164,20 +292,74 @@
             alert('تمام ڈیٹا حذف کر دیا گیا ہے۔');
         }
     }
+
     function shareOnWhatsApp() {
         const rows = document.querySelectorAll("#studentsTable tbody tr");
-        if (rows.length === 0) { alert("شیئر کرنے کے لیے کوئی ڈیٹا نہیں ہے۔"); return; }
-        let msg = "السلام علیکم\n*امتحانی رزلٹ کا خلاصہ*\n\n" + Array.from(rows).map((row, i) => `${i + 1}. *${row.cells[0].innerText}*: ${row.cells[4].innerText} نمبر`).join('\n');
-        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+        if (rows.length === 0) { 
+            alert("شیئر کرنے کے لیے کوئی ڈیٹا نہیں ہے۔"); 
+            return; 
+        }
+        
+        let messages = Array.from(rows).map((row, i) => {
+            let studentMsg = `${i + 1}. *${row.cells[0].innerText}*: ${row.cells[4].innerText} نمبر`;
+            const comment = row.cells[5].innerText.trim();
+            if (comment) { studentMsg += `\n   تبصرہ: ${comment}`; }
+            return studentMsg;
+        });
+        const fullMessage = "السلام علیکم\n*امتحانی رزلٹ کا خلاصہ*\n\n" + messages.join('\n\n');
+        window.open(`https://wa.me/?text=${encodeURIComponent(fullMessage)}`, '_blank');
     }
+
     function generatePdf() {
-        alert('پی ڈی ایف تیار کیا جا رہا ہے۔۔۔');
+        if (document.querySelectorAll("#studentsTable tbody tr").length === 0) { 
+            alert("PDF بنانے کے لیے کوئی ڈیٹا نہیں ہے۔"); 
+            return; 
+        }
+        
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(20).text("تمام طلباء کا رزلٹ", doc.internal.pageSize.width / 2, 15, { align: 'center' });
-        doc.setFontSize(10).text(new Date().toLocaleDateString(), doc.internal.pageSize.width / 2, 22, { align: 'center' });
-        doc.autoTable({ html: '#studentsTable', startY: 30, theme: 'grid', headStyles: { fillColor: [0, 123, 255], halign: 'center' }, styles: { font: 'sans-serif', halign: 'right' }, columnStyles: { 0: { halign: 'right' } }, didParseCell: (data) => { if (data.column.index === 6) data.cell.text = ''; } });
-        doc.save('طلباء-کا-رزلٹ.pdf');
+        doc.setFont('sans-serif'); 
+        
+        // Title
+        doc.setFontSize(16);
+        doc.text("تمام طلباء کا نتیجہ", doc.internal.pageSize.width / 2, 15, { align: 'center' });
+        
+        // Table data
+        const headers = [['عمل', 'تبصرہ', 'کُل', 'سوال3', 'سوال2', 'سوال1', 'نام']];
+        const body = Array.from(document.querySelectorAll("#studentsTable tbody tr")).map(row => [
+            '', 
+            row.cells[5].innerText, 
+            row.cells[4].innerText, 
+            row.cells[3].innerText, 
+            row.cells[2].innerText, 
+            row.cells[1].innerText, 
+            row.cells[0].innerText
+        ]);
+        
+        // Generate table
+        doc.autoTable({
+            head: headers, 
+            body: body, 
+            startY: 20, 
+            theme: 'grid',
+            headStyles: { 
+                fillColor: [74, 144, 226], 
+                halign: 'center', 
+                font: 'sans-serif',
+                fontSize: 10
+            },
+            styles: { 
+                font: 'sans-serif', 
+                halign: 'right', 
+                cellPadding: 2, 
+                fontSize: 9 
+            },
+            didParseCell: function(data) { 
+                data.cell.styles.halign = 'right'; 
+            }
+        });
+        
+        doc.save('طلباء-کا-نتیجہ.pdf');
     }
 </script>
 </body>
