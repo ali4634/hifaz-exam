@@ -1,10 +1,11 @@
-{
-  "name": "مدرسہ حاضری رجسٹر",
-  "short_name": "حاضری رجسٹر",
-  "start_url": "./رجسٹر.html",
+ {
+  "name": "امتحانی رزلٹ سسٹم",
+  "short_name": "رزلٹ سسٹم",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#f5f5f5",
-  "theme_color": "#4CAF50",
+  "background_color": "#ffffff",
+  "theme_color": "#007bff",
+  "description": "طلباء کے امتحانی نتائج کو منظم کرنے کے لیے ایک پروگریسو ویب ایپ۔",
   "icons": [
     {
       "src": "icon-192.png",
@@ -16,7 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "lang": "ur",
-  "dir": "rtl"
+  ]
 }
